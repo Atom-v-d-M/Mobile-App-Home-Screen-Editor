@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0b0b0c;
+  --color-surface: #141517;
+  --color-surface-2: #1d1f22;
+  --color-line: #2a2d31;
+  --color-canvas: #f4f1ea;
+  --color-text: #f2f3f5;
+  --color-text-muted: #9aa0a6;
+  --color-accent: #ff6b2c;
+  --color-accent-dim: #c2501f;
+  --color-danger: #f0554b;
+
+  --radius-panel: 14px;
+  --radius-control: 10px;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Swiper pagination reads against the light app screen, not Swiper's blue. */
+.reactiv-carousel .swiper {
+  padding-bottom: 22px;
+}
+
+.reactiv-carousel .swiper-pagination-bullet {
+  background: #000;
+  opacity: 0.2;
+}
+
+.reactiv-carousel .swiper-pagination-bullet-active {
+  opacity: 0.6;
+}
+
+@layer base {
+  html,
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: #fff;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
