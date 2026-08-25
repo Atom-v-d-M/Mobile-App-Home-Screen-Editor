@@ -11,6 +11,11 @@ import { DeviceFrame, DEVICE_BEZEL } from "./DeviceFrame";
 import { DeviceSelect } from "./DeviceSelect";
 import { PreviewScreen } from "./PreviewScreen";
 
+const PREVIEW_PAD_X = 24;
+const PREVIEW_PAD_TOP = 24;
+/** Device picker bar plus the same inset as the top, so the frame centers in the visible canvas. */
+const PREVIEW_PAD_BOTTOM = 96;
+
 export function PreviewPanel() {
   const { config } = useConfig();
   const { selectedDeviceId } = useUi();
@@ -22,7 +27,9 @@ export function PreviewPanel() {
   const shellWidth = device.width + DEVICE_BEZEL * 2;
   const shellHeight = device.height + DEVICE_BEZEL * 2;
   const measured = width > 0 && height > 0;
-  const scale = measured ? Math.min(1, (width - 48) / shellWidth, (height - 88) / shellHeight) : 1;
+  const scale = measured
+    ? Math.min(1, (width - PREVIEW_PAD_X * 2) / shellWidth, (height - PREVIEW_PAD_TOP - PREVIEW_PAD_BOTTOM) / shellHeight)
+    : 1;
   const safeScale = Math.max(scale, 0.1);
 
   return (
@@ -45,7 +52,7 @@ export function PreviewPanel() {
           if (file) void importFile(file);
         }}
       >
-        <div className="flex h-full w-full justify-center px-6 pb-[72px] pt-6">
+        <div className="grid h-full w-full place-items-center overflow-hidden px-6 pb-24 pt-6">
           {measured ? (
             <DeviceFrame device={device} screenBackground={config.screen.backgroundColor} scale={safeScale}>
               <PreviewScreen />

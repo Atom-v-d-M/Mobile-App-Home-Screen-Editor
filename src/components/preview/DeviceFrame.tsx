@@ -54,13 +54,19 @@ export function DeviceFrame({ device, screenBackground, scale, children }: Devic
   const shellHeight = device.height + BEZEL * 2;
 
   return (
-    <div style={{ width: shellWidth * scale, height: shellHeight * scale }}>
+    <div
+      className="relative shrink-0 overflow-hidden"
+      style={{ width: shellWidth * scale, height: shellHeight * scale }}
+    >
       <div
         style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
           width: shellWidth,
           height: shellHeight,
           transform: `scale(${scale})`,
-          transformOrigin: "top center",
+          transformOrigin: "top left",
           padding: BEZEL,
           borderRadius: device.radius + BEZEL,
           background: "#0B0B0C",
