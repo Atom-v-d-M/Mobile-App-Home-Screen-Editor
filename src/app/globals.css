@@ -29,7 +29,11 @@
 
 /* Swiper pagination reads against the light app screen, not Swiper's blue. */
 .reactiv-carousel .swiper {
-  padding-bottom: 22px;
+  padding-bottom: 32px;
+}
+
+.reactiv-carousel .swiper-pagination {
+  bottom: 4px;
 }
 
 .reactiv-carousel .swiper-pagination-bullet {
