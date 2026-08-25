@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "meta": {
+    "name": "Autumn drop",
+    "updatedAt": "2026-08-20T09:00:00.000Z"
+  },
+  "screen": {
+    "backgroundColor": "#F4F1EA"
+  },
+  "sections": [
+    {
+      "id": "sample-carousel",
+      "type": "carousel",
+      "images": [
+        { "id": "sample-image-1", "url": "https://picsum.photos/seed/reactiv-a/900/1200", "alt": "Model in the wool overcoat" },
+        { "id": "sample-image-2", "url": "https://picsum.photos/seed/reactiv-b/900/1200", "alt": "Detail of the lapel stitching" },
+        { "id": "sample-image-3", "url": "https://picsum.photos/seed/reactiv-c/900/1200", "alt": "Coat hanging in studio light" }
+      ],
+      "aspect": "portrait",
+      "showPagination": true,
+      "loop": true
+    },
+    {
+      "id": "sample-text",
+      "type": "text",
+      "title": "The overcoat, restocked",
+      "description": "Recycled wool, cut in Portugal, limited to 200 pieces. In the app before anywhere else.",
+      "titleColor": "#111111",
+      "descriptionColor": "#5A5F66",
+      "align": "left"
+    },
+    {
+      "id": "sample-cta",
+      "type": "cta",
+      "label": "Shop the drop",
+      "href": "https://www.reactiv.ai",
+      "backgroundColor": "#FF6B2C",
+      "labelColor": "#FFFFFF",
+      "fullWidth": true
+    },
+    {
+      "id": "sample-text-2",
+      "type": "text",
+      "title": "Free returns, 30 days",
+      "description": "Scan the tag in store to check your size before you buy.",
+      "titleColor": "#111111",
+      "descriptionColor": "#5A5F66",
+      "align": "center"
+    }
+  ]
+}
