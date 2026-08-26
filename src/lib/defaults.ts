@@ -34,6 +34,7 @@ export function createSection(type: SectionType): Section {
         backgroundColor: "#FF6B2C",
         labelColor: "#FFFFFF",
         fullWidth: true,
+        align: "center",
       };
   }
 }
@@ -74,6 +75,7 @@ export function createDefaultConfig(): ScreenConfig {
         backgroundColor: "#FF6B2C",
         labelColor: "#FFFFFF",
         fullWidth: true,
+        align: "center",
       },
     ],
   };

@@ -24,6 +24,8 @@ export const carouselSectionSchema = z.object({
   loop: z.boolean().default(false),
 });
 
+export const alignSchema = z.enum(["left", "center", "right"]);
+
 export const textSectionSchema = z.object({
   id: z.string().min(1),
   type: z.literal("text"),
@@ -31,7 +33,7 @@ export const textSectionSchema = z.object({
   description: z.string(),
   titleColor: hexColorSchema,
   descriptionColor: hexColorSchema,
-  align: z.enum(["left", "center", "right"]).default("left"),
+  align: alignSchema.default("left"),
 });
 
 export const ctaSectionSchema = z.object({
@@ -42,6 +44,7 @@ export const ctaSectionSchema = z.object({
   backgroundColor: hexColorSchema,
   labelColor: hexColorSchema,
   fullWidth: z.boolean().default(true),
+  align: alignSchema.default("center"),
 });
 
 export const sectionSchema = z.discriminatedUnion("type", [
@@ -64,6 +67,7 @@ export const screenConfigSchema = z.object({
   sections: z.array(sectionSchema).default([]),
 });
 
+export type Align = z.infer<typeof alignSchema>;
 export type CarouselImage = z.infer<typeof carouselImageSchema>;
 export type CarouselSection = z.infer<typeof carouselSectionSchema>;
 export type TextSection = z.infer<typeof textSectionSchema>;

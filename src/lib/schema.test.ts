@@ -68,6 +68,9 @@ describe("schema", () => {
       expect(carousel.images[0].alt).toBe("");
     }
     if (text.type === "text") expect(text.align).toBe("left");
-    if (cta.type === "cta") expect(cta.fullWidth).toBe(true);
+    if (cta.type === "cta") {
+      expect(cta.fullWidth).toBe(true);
+      expect(cta.align).toBe("center");
+    }
   });
 });

@@ -1,18 +1,11 @@
 "use client";
 
-import { AlignCenter, AlignLeft, AlignRight } from "lucide-react";
 import type { TextSection } from "@/lib/schema";
 import { useConfigActions } from "@/state/ConfigContext";
+import { AlignControl } from "@/components/fields/AlignControl";
 import { ColorField } from "@/components/fields/ColorField";
-import { SegmentedControl } from "@/components/fields/SegmentedControl";
 import { TextAreaField } from "@/components/fields/TextAreaField";
 import { TextField } from "@/components/fields/TextField";
-
-const ALIGN_OPTIONS = [
-  { value: "left" as const, label: "Left", glyph: <AlignLeft aria-hidden="true" className="size-3.5" /> },
-  { value: "center" as const, label: "Center", glyph: <AlignCenter aria-hidden="true" className="size-3.5" /> },
-  { value: "right" as const, label: "Right", glyph: <AlignRight aria-hidden="true" className="size-3.5" /> },
-];
 
 export function TextForm({ section }: { section: TextSection }) {
   const { updateSection } = useConfigActions();
@@ -43,12 +36,7 @@ export function TextForm({ section }: { section: TextSection }) {
           onChange={(descriptionColor) => updateSection(section.id, { descriptionColor })}
         />
       </div>
-      <SegmentedControl
-        label="Alignment"
-        value={section.align}
-        options={ALIGN_OPTIONS}
-        onChange={(align) => updateSection(section.id, { align })}
-      />
+      <AlignControl value={section.align} onChange={(align) => updateSection(section.id, { align })} />
     </div>
   );
 }

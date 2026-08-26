@@ -4,6 +4,7 @@ import { AlertTriangle } from "lucide-react";
 import { contrastRatio } from "@/lib/color";
 import type { CtaSection } from "@/lib/schema";
 import { useConfigActions } from "@/state/ConfigContext";
+import { AlignControl } from "@/components/fields/AlignControl";
 import { ColorField } from "@/components/fields/ColorField";
 import { TextField } from "@/components/fields/TextField";
 import { ToggleField } from "@/components/fields/ToggleField";
@@ -50,6 +51,9 @@ export function CtaForm({ section }: { section: CtaSection }) {
         checked={section.fullWidth}
         onChange={(fullWidth) => updateSection(section.id, { fullWidth })}
       />
+      {!section.fullWidth ? (
+        <AlignControl value={section.align} onChange={(align) => updateSection(section.id, { align })} />
+      ) : null}
     </div>
   );
 }

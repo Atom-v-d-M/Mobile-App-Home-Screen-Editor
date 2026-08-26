@@ -36,7 +36,8 @@
       "href": "https://www.reactiv.ai",
       "backgroundColor": "#FF6B2C",
       "labelColor": "#FFFFFF",
-      "fullWidth": true
+      "fullWidth": true,
+      "align": "center"
     },
     {
       "id": "sample-text-2",

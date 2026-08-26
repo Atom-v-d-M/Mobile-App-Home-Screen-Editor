@@ -123,6 +123,26 @@ describe("editor → preview", () => {
     expect(previewSections().map((node) => node.dataset.sectionType)).toEqual(["text", "carousel", "cta"]);
   });
 
+  it("shows CTA alignment only when the button is not full width", async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+
+    await user.click(screen.getByRole("button", { name: /^cta button/i }));
+    expect(screen.queryByRole("radiogroup", { name: "Alignment" })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("switch", { name: /full width/i }));
+    const alignment = screen.getByRole("radiogroup", { name: "Alignment" });
+    await user.click(within(alignment).getByRole("radio", { name: /right/i }));
+
+    const previewCta = within(screen.getByTestId("preview")).getByRole("button", { name: "Shop the drop" });
+    expect(previewCta).toHaveClass("w-auto");
+    expect(previewCta.parentElement).toHaveClass("justify-end");
+
+    await user.click(screen.getByRole("switch", { name: /full width/i }));
+    expect(screen.queryByRole("radiogroup", { name: "Alignment" })).not.toBeInTheDocument();
+    expect(within(screen.getByTestId("preview")).getByRole("button", { name: "Shop the drop" })).toHaveClass("w-full");
+  });
+
   it("shows a persistent error card for a malformed import and leaves the screen alone", async () => {
     const user = userEvent.setup();
     render(<Harness />);
