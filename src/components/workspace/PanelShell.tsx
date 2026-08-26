@@ -9,9 +9,11 @@ interface PanelShellProps {
   target: Exclude<FullscreenTarget, "none">;
   children: ReactNode;
   headerRight?: ReactNode;
+  /** Preview is a fixed canvas; the editor list needs to scroll. */
+  overflow?: "auto" | "hidden";
 }
 
-export function PanelShell({ title, target, children, headerRight }: PanelShellProps) {
+export function PanelShell({ title, target, children, headerRight, overflow = "auto" }: PanelShellProps) {
   const { fullscreen, setFullscreen } = useUi();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const wasFullscreen = useRef(false);
@@ -70,7 +72,15 @@ export function PanelShell({ title, target, children, headerRight }: PanelShellP
           </button>
         </div>
       </div>
-      <div className="min-h-0 flex-1 overflow-auto">{children}</div>
+      <div
+        className={
+          overflow === "hidden"
+            ? "min-h-0 flex-1 overflow-hidden overscroll-none"
+            : "min-h-0 flex-1 overflow-auto overscroll-contain"
+        }
+      >
+        {children}
+      </div>
     </section>
   );
 }

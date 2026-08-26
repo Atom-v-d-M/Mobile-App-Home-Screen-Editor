@@ -51,6 +51,9 @@
     background-color: var(--color-ink);
     color: var(--color-text);
     -webkit-font-smoothing: antialiased;
+    height: 100dvh;
+    overflow: hidden;
+    overscroll-behavior: none;
   }
 
   :focus-visible {

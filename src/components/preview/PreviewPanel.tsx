@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useConfigIo } from "@/hooks/useConfigIo";
 import { useElementSize } from "@/hooks/useElementSize";
 import { getDevice } from "@/lib/devices";
@@ -10,6 +10,9 @@ import { PanelShell } from "@/components/workspace/PanelShell";
 import { DeviceFrame, DEVICE_BEZEL } from "./DeviceFrame";
 import { DeviceSelect } from "./DeviceSelect";
 import { PreviewScreen } from "./PreviewScreen";
+
+/** Touches on these may pan or activate; everywhere else on the canvas is locked. */
+const PREVIEW_TOUCH_ALLOW = "[data-preview-scroll], select, button, input, textarea, a, label";
 
 const PREVIEW_PAD_X = 24;
 const PREVIEW_PAD_TOP = 24;
@@ -32,11 +35,28 @@ export function PreviewPanel() {
     : 1;
   const safeScale = Math.max(scale, 0.1);
 
+  // Safari still pull-to-refreshes unless touchmove is cancelled with a non-passive
+  // listener. React's onTouchMove is often passive, so this is attached natively.
+  useEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+
+    const onTouchMove = (event: TouchEvent) => {
+      const node = event.target;
+      const element = node instanceof Element ? node : node instanceof Node ? node.parentElement : null;
+      if (element?.closest(PREVIEW_TOUCH_ALLOW)) return;
+      event.preventDefault();
+    };
+
+    root.addEventListener("touchmove", onTouchMove, { passive: false });
+    return () => root.removeEventListener("touchmove", onTouchMove);
+  }, [ref]);
+
   return (
-    <PanelShell title="Preview" target="preview">
+    <PanelShell title="Preview" target="preview" overflow="hidden">
       <div
         ref={ref}
-        className="relative h-full w-full overflow-hidden"
+        className="relative h-full w-full overflow-hidden overscroll-none"
         onDragOver={(event) => {
           event.preventDefault();
           setDropping(true);
@@ -52,7 +72,9 @@ export function PreviewPanel() {
           if (file) void importFile(file);
         }}
       >
-        <div className="grid h-full w-full place-items-center overflow-hidden px-6 pb-24 pt-6">
+        <div aria-hidden="true" className="absolute inset-0 touch-none" />
+
+        <div className="pointer-events-none relative z-10 grid h-full w-full place-items-center overflow-hidden px-6 pb-24 pt-6">
           {measured ? (
             <DeviceFrame device={device} screenBackground={config.screen.backgroundColor} scale={safeScale}>
               <PreviewScreen />
@@ -66,7 +88,7 @@ export function PreviewPanel() {
           </div>
         ) : null}
 
-        <div className="absolute inset-x-0 bottom-0 flex justify-center border-t border-line bg-surface/90 px-4 py-3 backdrop-blur">
+        <div className="absolute inset-x-0 bottom-0 z-20 flex justify-center border-t border-line bg-surface/90 px-4 py-3 backdrop-blur">
           <DeviceSelect scale={safeScale} />
         </div>
       </div>

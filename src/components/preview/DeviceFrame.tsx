@@ -55,7 +55,7 @@ export function DeviceFrame({ device, screenBackground, scale, children }: Devic
 
   return (
     <div
-      className="relative shrink-0 overflow-hidden"
+      className="pointer-events-auto relative shrink-0 overflow-hidden"
       style={{ width: shellWidth * scale, height: shellHeight * scale }}
     >
       <div
@@ -82,7 +82,8 @@ export function DeviceFrame({ device, screenBackground, scale, children }: Devic
           <StatusBar ink={ink} notch={device.notch} />
 
           <div
-            className="no-scrollbar h-full w-full overflow-y-auto overscroll-contain"
+            data-preview-scroll
+            className="no-scrollbar h-full w-full overflow-y-auto overscroll-contain touch-pan-y"
             style={{ paddingTop: device.notch === "none" ? 24 : 48 }}
           >
             {children}

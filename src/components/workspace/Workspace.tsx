@@ -34,7 +34,7 @@ function WorkspaceLayout() {
   const defaultSize = isDesktop ? panelRatio : 50;
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-ink">
+    <div className="flex h-dvh flex-col overflow-hidden overscroll-none bg-ink">
       <Toolbar />
 
       <div className="min-h-0 flex-1 p-2">

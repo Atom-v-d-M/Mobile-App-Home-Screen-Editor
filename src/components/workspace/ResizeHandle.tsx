@@ -23,8 +23,8 @@ export function ResizeHandle({ direction, ratio }: ResizeHandleProps) {
   return (
     <PanelResizeHandle
       onDragging={setDragging}
-      className={`group relative shrink-0 bg-transparent focus-visible:outline-none ${
-        isHorizontal ? "w-3 cursor-col-resize" : "h-3 cursor-row-resize"
+      className={`group relative z-20 shrink-0 bg-transparent touch-none focus-visible:outline-none ${
+        isHorizontal ? "w-3 cursor-col-resize" : "h-10 cursor-row-resize"
       }`}
     >
       {/* hairline */}
