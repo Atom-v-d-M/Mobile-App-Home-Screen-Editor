@@ -1,6 +1,18 @@
 import { createId } from "./id";
 import type { ScreenConfig, Section, SectionType } from "./schema";
 
+/** Deep copy a section with fresh ids (section and nested carousel images). */
+export function cloneSection(section: Section): Section {
+  if (section.type === "carousel") {
+    return {
+      ...section,
+      id: createId(),
+      images: section.images.map((image) => ({ ...image, id: createId() })),
+    };
+  }
+  return { ...section, id: createId() };
+}
+
 /** A new section of the given type, with sane, immediately-visible content. */
 export function createSection(type: SectionType): Section {
   switch (type) {

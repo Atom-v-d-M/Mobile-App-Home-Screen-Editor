@@ -1,5 +1,5 @@
 import { arrayMove } from "@/lib/array";
-import { createDefaultConfig, createSection } from "@/lib/defaults";
+import { cloneSection, createDefaultConfig, createSection } from "@/lib/defaults";
 import { createId } from "@/lib/id";
 import type { CarouselImage, CarouselSection, ScreenConfig, Section, SectionType } from "@/lib/schema";
 
@@ -12,6 +12,7 @@ export type ConfigAction =
   | { type: "config/reset" }
   | { type: "screen/update"; payload: Partial<ScreenConfig["screen"]> }
   | { type: "section/add"; payload: { sectionType: SectionType; index?: number } }
+  | { type: "section/duplicate"; payload: { id: string } }
   | { type: "section/remove"; payload: { id: string } }
   | { type: "section/reorder"; payload: { from: number; to: number } }
   | { type: "section/update"; payload: { id: string; patch: Partial<Section> } }
@@ -68,6 +69,15 @@ export function configReducer(state: ScreenConfig, action: ConfigAction): Screen
       } else {
         sections.splice(index, 0, section);
       }
+      return { ...state, sections };
+    }
+
+    case "section/duplicate": {
+      const index = state.sections.findIndex((section) => section.id === action.payload.id);
+      if (index === -1) return state;
+
+      const sections = state.sections.slice();
+      sections.splice(index + 1, 0, cloneSection(state.sections[index]));
       return { ...state, sections };
     }
 

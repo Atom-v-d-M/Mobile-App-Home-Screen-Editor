@@ -67,12 +67,33 @@ describe("editor → preview", () => {
     const user = userEvent.setup();
     render(<Harness />);
 
-    await user.click(screen.getByRole("button", { name: /text block/i }));
+    await user.click(screen.getByRole("button", { name: /^text block/i }));
     const title = screen.getByLabelText("Title");
     await user.clear(title);
     await user.type(title, "New heading");
 
     expect(within(screen.getByTestId("preview")).getByText("New heading")).toBeInTheDocument();
+  });
+
+  it("duplicates a section under the original and expands the copy", async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+
+    expect(previewSections().map((node) => node.dataset.sectionType)).toEqual(["carousel", "text", "cta"]);
+
+    await user.click(screen.getByRole("button", { name: /duplicate text block/i }));
+
+    expect(previewSections().map((node) => node.dataset.sectionType)).toEqual(["carousel", "text", "text", "cta"]);
+    expect(within(screen.getByTestId("preview")).getAllByText("Autumn capsule")).toHaveLength(2);
+
+    const title = screen.getByLabelText("Title");
+    expect(title).toHaveValue("Autumn capsule");
+    expect(screen.getAllByLabelText("Title")).toHaveLength(1);
+
+    await user.clear(title);
+    await user.type(title, "Copied heading");
+    expect(within(screen.getByTestId("preview")).getByText("Copied heading")).toBeInTheDocument();
+    expect(within(screen.getByTestId("preview")).getByText("Autumn capsule")).toBeInTheDocument();
   });
 
   it("adds a carousel from the add bar", async () => {
@@ -90,7 +111,7 @@ describe("editor → preview", () => {
     const user = userEvent.setup();
     render(<Harness />);
 
-    await user.click(screen.getByRole("button", { name: /text block/i }));
+    await user.click(screen.getByRole("button", { name: /^text block/i }));
     const heading = within(screen.getByTestId("preview")).getByText("Autumn capsule");
     expect(heading).toHaveStyle({ color: "#111111" });
 

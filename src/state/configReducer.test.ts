@@ -49,6 +49,45 @@ describe("configReducer", () => {
     expect(inserted.sections[1].type).toBe("text");
   });
 
+  it("duplicates a section under the source with a new id", () => {
+    const state = base();
+    const source = state.sections[1];
+    const next = configReducer(state, { type: "section/duplicate", payload: { id: source.id } });
+
+    expect(next.sections).toHaveLength(4);
+    expect(next.sections[1]).toBe(source);
+    expect(next.sections[2]).toMatchObject({ type: "text", title: "Autumn capsule" });
+    expect(next.sections[2].id).not.toBe(source.id);
+    expect(next.sections[0]).toBe(state.sections[0]);
+    expect(next.sections[3]).toBe(state.sections[2]);
+  });
+
+  it("duplicates a carousel with new image ids and the same content", () => {
+    const state = base();
+    const source = state.sections[0] as CarouselSection;
+    const next = configReducer(state, { type: "section/duplicate", payload: { id: source.id } });
+    const clone = next.sections[1] as CarouselSection;
+
+    expect(clone).toMatchObject({ type: "carousel", aspect: source.aspect, loop: source.loop });
+    expect(clone.id).not.toBe(source.id);
+    expect(clone.images.map((image) => image.url)).toEqual(source.images.map((image) => image.url));
+    expect(clone.images.map((image) => image.id)).not.toEqual(source.images.map((image) => image.id));
+
+    const ids = [source.id, clone.id, ...source.images.map((image) => image.id), ...clone.images.map((image) => image.id)];
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("appends when duplicating the last section and ignores a missing id", () => {
+    const state = base();
+    const last = state.sections[2];
+    const next = configReducer(state, { type: "section/duplicate", payload: { id: last.id } });
+
+    expect(next.sections).toHaveLength(4);
+    expect(next.sections[3]).toMatchObject({ type: "cta", label: "Shop the drop" });
+    expect(next.sections[3].id).not.toBe(last.id);
+    expect(configReducer(state, { type: "section/duplicate", payload: { id: "ghost" } })).toBe(state);
+  });
+
   it("removes by id and ignores a missing id", () => {
     const state = base();
     const id = state.sections[1].id;

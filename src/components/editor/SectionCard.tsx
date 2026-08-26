@@ -1,12 +1,51 @@
 "use client";
 
 import type { FC, ReactNode } from "react";
-import { useEffect, useState } from "react";
-import { ChevronDown, Trash2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronDown, Copy, Trash2 } from "lucide-react";
 import type { Section } from "@/lib/schema";
-import { useConfigActions } from "@/state/ConfigContext";
+import { useConfig, useConfigActions } from "@/state/ConfigContext";
 import { useUi } from "@/state/UiContext";
 import { EDITOR_REGISTRY } from "./registry";
+
+/** Clone in place, then expand whatever landed under the source. */
+function DuplicateControl({
+  sectionId,
+  label,
+  disabled,
+}: {
+  sectionId: string;
+  label: string;
+  disabled?: boolean;
+}) {
+  const { config } = useConfig();
+  const { duplicateSection } = useConfigActions();
+  const { setExpandedSectionId } = useUi();
+  const pending = useRef(false);
+
+  useEffect(() => {
+    if (!pending.current) return;
+    pending.current = false;
+    const index = config.sections.findIndex((section) => section.id === sectionId);
+    const clone = index === -1 ? undefined : config.sections[index + 1];
+    if (clone) setExpandedSectionId(clone.id);
+  }, [config.sections, sectionId, setExpandedSectionId]);
+
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={() => {
+        pending.current = true;
+        duplicateSection(sectionId);
+      }}
+      aria-label={`Duplicate ${label}`}
+      className="grid size-8 place-items-center rounded-control text-text-muted transition-colors duration-150 ease-out hover:bg-surface-2 hover:text-text focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent max-md:size-11 disabled:pointer-events-none"
+    >
+      <Copy aria-hidden="true" className="size-4" />
+    </button>
+  );
+}
 
 /** Delete asks once, inline, and forgets after 3 seconds. No modal. */
 function DeleteControl({ sectionId, label }: { sectionId: string; label: string }) {
@@ -93,6 +132,7 @@ export function SectionCard({ section, handle, overlay = false }: SectionCardPro
             }`}
           />
         </button>
+        <DuplicateControl sectionId={section.id} label={entry.label} disabled={overlay} />
         <DeleteControl sectionId={section.id} label={entry.label} />
       </div>
 

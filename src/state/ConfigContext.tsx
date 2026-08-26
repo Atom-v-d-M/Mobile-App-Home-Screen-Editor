@@ -71,6 +71,10 @@ export function useConfigActions() {
     (sectionType: SectionType, index?: number) => dispatch({ type: "section/add", payload: { sectionType, index } }),
     [dispatch],
   );
+  const duplicateSection = useCallback(
+    (id: string) => dispatch({ type: "section/duplicate", payload: { id } }),
+    [dispatch],
+  );
   const removeSection = useCallback((id: string) => dispatch({ type: "section/remove", payload: { id } }), [dispatch]);
   const reorderSections = useCallback(
     (from: number, to: number) => dispatch({ type: "section/reorder", payload: { from, to } }),
@@ -106,6 +110,7 @@ export function useConfigActions() {
       resetConfig,
       updateScreen,
       addSection,
+      duplicateSection,
       removeSection,
       reorderSections,
       updateSection,
@@ -119,6 +124,7 @@ export function useConfigActions() {
       resetConfig,
       updateScreen,
       addSection,
+      duplicateSection,
       removeSection,
       reorderSections,
       updateSection,
