@@ -107,6 +107,37 @@ describe("editor → preview", () => {
     expect(previewSections().at(-1)).toHaveAttribute("data-section-type", "carousel");
   });
 
+  it("places theme settings above screen settings", () => {
+    render(<Harness />);
+    const theme = screen.getByRole("button", { name: /theme settings/i });
+    const screenSettings = screen.getByRole("button", { name: /screen settings/i });
+    expect(theme.compareDocumentPosition(screenSettings) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("drives colour-field presets from the theme palette without rewriting applied colours", async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+
+    const heading = within(screen.getByTestId("preview")).getByText("Autumn capsule");
+    expect(heading).toHaveStyle({ color: "#111111" });
+
+    await user.click(screen.getByRole("button", { name: /theme settings/i }));
+    await user.click(screen.getByRole("button", { name: "Add colour" }));
+    expect(screen.getByLabelText("Palette colour 7")).toHaveValue("#000000");
+
+    const third = screen.getByLabelText("Palette colour 3");
+    expect(third).toHaveValue("#111111");
+    await user.clear(third);
+    await user.paste("#00FF00");
+
+    expect(heading).toHaveStyle({ color: "#111111" });
+
+    await user.click(screen.getByRole("button", { name: /^text block/i }));
+    await user.click(screen.getAllByRole("button", { name: "Use #00FF00" })[0]);
+
+    expect(heading).toHaveStyle({ color: "#00ff00" });
+  });
+
   it("keeps the last valid colour on invalid hex, and applies valid hex", async () => {
     const user = userEvent.setup();
     render(<Harness />);

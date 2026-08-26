@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { DEFAULT_COLOR_PALETTE } from "@/lib/color";
 import { createDefaultConfig } from "@/lib/defaults";
-import { exportFilename, parseConfig, regenerateIds, serializeConfig } from "@/lib/io";
+import { exportFilename, isSameShape, parseConfig, regenerateIds, serializeConfig } from "@/lib/io";
 
 describe("io", () => {
   it("stamps updatedAt and pretty-prints on serialise", () => {
@@ -47,6 +48,22 @@ describe("io", () => {
       expect(result.config.sections).toHaveLength(3);
       expect(result.config.sections.map((s) => s.id)).not.toEqual(original.sections.map((s) => s.id));
     }
+  });
+
+  it("fills in a missing theme from the schema default", () => {
+    const config = createDefaultConfig();
+    const { theme: _theme, ...rest } = JSON.parse(serializeConfig(config)) as Record<string, unknown>;
+    void _theme;
+    const result = parseConfig(JSON.stringify(rest));
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.config.theme.palette).toEqual(DEFAULT_COLOR_PALETTE);
+  });
+
+  it("treats a palette-only edit as a different shape", () => {
+    const a = createDefaultConfig();
+    const b = { ...a, theme: { palette: [...a.theme.palette, "#000000"] } };
+    expect(isSameShape(a, b)).toBe(false);
+    expect(isSameShape(a, { ...a, meta: { name: "Other" } })).toBe(true);
   });
 
   it("regenerates nested image ids too", () => {

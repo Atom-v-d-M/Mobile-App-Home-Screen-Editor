@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { DEFAULT_COLOR_PALETTE } from "./color";
 
 /** Shared primitives. Messages are user-facing: say what's wrong and how to fix it. */
 export const hexColorSchema = z
@@ -55,12 +56,17 @@ export const sectionSchema = z.discriminatedUnion("type", [
 
 export const sectionTypeSchema = z.enum(["carousel", "text", "cta"]);
 
+export const themeSchema = z.object({
+  palette: z.array(hexColorSchema).default(() => [...DEFAULT_COLOR_PALETTE]),
+});
+
 export const screenConfigSchema = z.object({
   version: z.literal(1),
   meta: z.object({
     name: z.string(),
     updatedAt: z.string().optional(),
   }),
+  theme: themeSchema.default(() => ({ palette: [...DEFAULT_COLOR_PALETTE] })),
   screen: z.object({
     backgroundColor: hexColorSchema,
   }),
@@ -74,6 +80,7 @@ export type TextSection = z.infer<typeof textSectionSchema>;
 export type CtaSection = z.infer<typeof ctaSectionSchema>;
 export type Section = z.infer<typeof sectionSchema>;
 export type SectionType = z.infer<typeof sectionTypeSchema>;
+export type Theme = z.infer<typeof themeSchema>;
 export type ScreenConfig = z.infer<typeof screenConfigSchema>;
 
 /** Narrow helper: a patch that is valid for a given section type. */

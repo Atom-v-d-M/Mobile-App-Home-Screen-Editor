@@ -93,6 +93,7 @@ export function exportFilename(now: Date = new Date()): string {
 export function isSameShape(a: ScreenConfig, b: ScreenConfig): boolean {
   const strip = (config: ScreenConfig) =>
     JSON.stringify({
+      theme: config.theme,
       screen: config.screen,
       sections: config.sections.map((section) =>
         section.type === "carousel"

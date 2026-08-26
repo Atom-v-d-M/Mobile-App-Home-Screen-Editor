@@ -6,6 +6,7 @@ import { AddBar } from "./AddBar";
 import { ImportErrorCard } from "./ImportErrorCard";
 import { ScreenSettings } from "./ScreenSettings";
 import { SectionList } from "./SectionList";
+import { ThemeSettings } from "./ThemeSettings";
 
 export function EditorPanel() {
   const { config } = useConfig();
@@ -14,6 +15,7 @@ export function EditorPanel() {
     <PanelShell title="Editor" target="editor">
       <div className="flex flex-col gap-3 p-3">
         <ImportErrorCard />
+        <ThemeSettings />
         <ScreenSettings />
         <AddBar />
 

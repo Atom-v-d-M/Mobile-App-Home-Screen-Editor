@@ -4,6 +4,9 @@
     "name": "Autumn drop",
     "updatedAt": "2026-08-20T09:00:00.000Z"
   },
+  "theme": {
+    "palette": ["#FF6B2C", "#C2501F", "#111111", "#5A5F66", "#F4F1EA", "#FFFFFF"]
+  },
   "screen": {
     "backgroundColor": "#F4F1EA"
   },

@@ -36,6 +36,7 @@ export function ScreenSettings() {
             label="Background"
             value={config.screen.backgroundColor}
             onChange={(backgroundColor) => updateScreen({ backgroundColor })}
+            presets={config.theme.palette}
           />
         </div>
       ) : null}

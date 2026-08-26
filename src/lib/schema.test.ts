@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { DEFAULT_COLOR_PALETTE } from "@/lib/color";
 import { createDefaultConfig } from "@/lib/defaults";
 import { hexColorSchema, imageUrlSchema, screenConfigSchema } from "@/lib/schema";
 
@@ -72,5 +73,19 @@ describe("schema", () => {
       expect(cta.fullWidth).toBe(true);
       expect(cta.align).toBe("center");
     }
+    expect(parsed.theme.palette).toEqual(DEFAULT_COLOR_PALETTE);
+  });
+
+  it("rejects a palette entry that is not hex", () => {
+    const config = createDefaultConfig();
+    const result = screenConfigSchema.safeParse({ ...config, theme: { palette: ["#FF6B2C", "red"] } });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts an empty palette", () => {
+    const config = createDefaultConfig();
+    const result = screenConfigSchema.safeParse({ ...config, theme: { palette: [] } });
+    expect(result.success).toBe(true);
+    if (result.success) expect(result.data.theme.palette).toEqual([]);
   });
 });

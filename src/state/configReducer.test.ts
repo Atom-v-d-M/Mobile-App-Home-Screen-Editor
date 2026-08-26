@@ -39,6 +39,16 @@ describe("configReducer", () => {
     expect(state.screen.backgroundColor).toBe("#FFFFFF");
   });
 
+  it("updates the theme palette without rewriting applied colours", () => {
+    const state = base();
+    const next = configReducer(state, { type: "theme/update", payload: { palette: ["#000000"] } });
+    expect(next.theme.palette).toEqual(["#000000"]);
+    expect(next.sections).toBe(state.sections);
+    expect(next.screen).toBe(state.screen);
+    expect(state.sections[1]).toMatchObject({ type: "text", titleColor: "#111111" });
+    expect(state.theme.palette).toHaveLength(6);
+  });
+
   it("appends a section, or inserts at an index", () => {
     const state = base();
     const appended = configReducer(state, { type: "section/add", payload: { sectionType: "cta" } });

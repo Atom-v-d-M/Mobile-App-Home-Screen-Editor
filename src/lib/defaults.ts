@@ -1,3 +1,4 @@
+import { DEFAULT_COLOR_PALETTE } from "./color";
 import { createId } from "./id";
 import type { ScreenConfig, Section, SectionType } from "./schema";
 
@@ -56,6 +57,7 @@ export function createDefaultConfig(): ScreenConfig {
   return {
     version: 1,
     meta: { name: "Untitled screen" },
+    theme: { palette: [...DEFAULT_COLOR_PALETTE] },
     screen: { backgroundColor: "#FFFFFF" },
     sections: [
       {

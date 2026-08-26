@@ -3,7 +3,7 @@
 import { AlertTriangle } from "lucide-react";
 import { contrastRatio } from "@/lib/color";
 import type { CtaSection } from "@/lib/schema";
-import { useConfigActions } from "@/state/ConfigContext";
+import { useConfig, useConfigActions } from "@/state/ConfigContext";
 import { AlignControl } from "@/components/fields/AlignControl";
 import { ColorField } from "@/components/fields/ColorField";
 import { TextField } from "@/components/fields/TextField";
@@ -11,6 +11,7 @@ import { ToggleField } from "@/components/fields/ToggleField";
 import { UrlField } from "@/components/fields/UrlField";
 
 export function CtaForm({ section }: { section: CtaSection }) {
+  const { config } = useConfig();
   const { updateSection } = useConfigActions();
   const ratio = contrastRatio(section.labelColor, section.backgroundColor);
   const lowContrast = ratio < 3;
@@ -33,11 +34,13 @@ export function CtaForm({ section }: { section: CtaSection }) {
           label="Background"
           value={section.backgroundColor}
           onChange={(backgroundColor) => updateSection(section.id, { backgroundColor })}
+          presets={config.theme.palette}
         />
         <ColorField
           label="Label colour"
           value={section.labelColor}
           onChange={(labelColor) => updateSection(section.id, { labelColor })}
+          presets={config.theme.palette}
         />
       </div>
       {lowContrast ? (

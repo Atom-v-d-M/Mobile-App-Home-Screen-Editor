@@ -62,6 +62,10 @@ export function useConfigActions() {
   const loadConfig = useCallback((payload: ScreenConfig) => dispatch({ type: "config/load", payload }), [dispatch]);
   const resetConfig = useCallback(() => dispatch({ type: "config/reset" }), [dispatch]);
 
+  const updateTheme = useCallback(
+    (payload: Partial<ScreenConfig["theme"]>) => dispatch({ type: "theme/update", payload }),
+    [dispatch],
+  );
   const updateScreen = useCallback(
     (payload: Partial<ScreenConfig["screen"]>) => dispatch({ type: "screen/update", payload }),
     [dispatch],
@@ -108,6 +112,7 @@ export function useConfigActions() {
     () => ({
       loadConfig,
       resetConfig,
+      updateTheme,
       updateScreen,
       addSection,
       duplicateSection,
@@ -122,6 +127,7 @@ export function useConfigActions() {
     [
       loadConfig,
       resetConfig,
+      updateTheme,
       updateScreen,
       addSection,
       duplicateSection,

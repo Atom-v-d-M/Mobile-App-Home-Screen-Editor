@@ -10,6 +10,7 @@ import type { CarouselImage, CarouselSection, ScreenConfig, Section, SectionType
 export type ConfigAction =
   | { type: "config/load"; payload: ScreenConfig }
   | { type: "config/reset" }
+  | { type: "theme/update"; payload: Partial<ScreenConfig["theme"]> }
   | { type: "screen/update"; payload: Partial<ScreenConfig["screen"]> }
   | { type: "section/add"; payload: { sectionType: SectionType; index?: number } }
   | { type: "section/duplicate"; payload: { id: string } }
@@ -56,6 +57,9 @@ export function configReducer(state: ScreenConfig, action: ConfigAction): Screen
 
     case "config/reset":
       return createDefaultConfig();
+
+    case "theme/update":
+      return { ...state, theme: { ...state.theme, ...action.payload } };
 
     case "screen/update":
       return { ...state, screen: { ...state.screen, ...action.payload } };

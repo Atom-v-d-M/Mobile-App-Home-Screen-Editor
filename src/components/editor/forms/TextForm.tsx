@@ -1,13 +1,14 @@
 "use client";
 
 import type { TextSection } from "@/lib/schema";
-import { useConfigActions } from "@/state/ConfigContext";
+import { useConfig, useConfigActions } from "@/state/ConfigContext";
 import { AlignControl } from "@/components/fields/AlignControl";
 import { ColorField } from "@/components/fields/ColorField";
 import { TextAreaField } from "@/components/fields/TextAreaField";
 import { TextField } from "@/components/fields/TextField";
 
 export function TextForm({ section }: { section: TextSection }) {
+  const { config } = useConfig();
   const { updateSection } = useConfigActions();
 
   return (
@@ -29,11 +30,13 @@ export function TextForm({ section }: { section: TextSection }) {
           label="Title colour"
           value={section.titleColor}
           onChange={(titleColor) => updateSection(section.id, { titleColor })}
+          presets={config.theme.palette}
         />
         <ColorField
           label="Description colour"
           value={section.descriptionColor}
           onChange={(descriptionColor) => updateSection(section.id, { descriptionColor })}
+          presets={config.theme.palette}
         />
       </div>
       <AlignControl value={section.align} onChange={(align) => updateSection(section.id, { align })} />

@@ -50,5 +50,14 @@ export function normaliseHex(input: string): string | null {
   return `#${full.toUpperCase()}`;
 }
 
-/** Six brand swatches offered under every colour field. */
-export const COLOR_PRESETS = ["#FF6B2C", "#C2501F", "#111111", "#5A5F66", "#F4F1EA", "#FFFFFF"];
+/** Seed palette for new screens. Colour fields read the live theme array, not this. */
+export const DEFAULT_COLOR_PALETTE = ["#FF6B2C", "#C2501F", "#111111", "#5A5F66", "#F4F1EA", "#FFFFFF"];
+
+/** First seed colour not already in `palette`, otherwise black. */
+export function nextPaletteColor(palette: string[]): string {
+  const existing = new Set(palette.map((color) => normaliseHex(color)).filter((color): color is string => color !== null));
+  for (const candidate of DEFAULT_COLOR_PALETTE) {
+    if (!existing.has(candidate)) return candidate;
+  }
+  return "#000000";
+}
