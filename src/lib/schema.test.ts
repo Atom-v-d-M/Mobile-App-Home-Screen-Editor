@@ -57,7 +57,7 @@ describe("schema", () => {
           id: "b1",
           type: "cta",
           label: "Go",
-          href: "https://www.reactiv.ai",
+          href: "https://www.example.com",
           backgroundColor: "#FF6B2C",
           labelColor: "#FFF",
         },

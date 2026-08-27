@@ -133,10 +133,10 @@ describe("configReducer", () => {
 
     const added = configReducer(state, {
       type: "item/add",
-      payload: { sectionId, url: "https://picsum.photos/seed/reactiv-4/800/800" },
+      payload: { sectionId, url: "https://picsum.photos/seed/home-4/800/800" },
     });
     expect(carouselOf(added).items).toHaveLength(4);
-    expect(carouselOf(added).items[3]).toMatchObject({ kind: "image", url: "https://picsum.photos/seed/reactiv-4/800/800" });
+    expect(carouselOf(added).items[3]).toMatchObject({ kind: "image", url: "https://picsum.photos/seed/home-4/800/800" });
 
     const itemId = carouselOf(state).items[0].id;
     const updated = configReducer(state, {

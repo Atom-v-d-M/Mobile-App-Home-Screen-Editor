@@ -1,4 +1,4 @@
-# Reactiv Home Screen Editor
+# Home Screen Editor
 
 A two-panel tool for building a mobile app home screen: a live device preview on one side, an editor
 on the other, split by a draggable divider. Sections (media carousel, text block, CTA button) are
@@ -119,6 +119,6 @@ src/components/
 examples/         sample-screen.json
 ```
 
-Autosave writes `reactiv-home-editor:v1` 300ms after the last change; the panel ratio and selected
+Autosave writes `home-screen-editor:v1` 300ms after the last change; the panel ratio and selected
 device persist under their own keys. Storage is only ever read inside effects. Preview updates are
 never debounced — only the write is.

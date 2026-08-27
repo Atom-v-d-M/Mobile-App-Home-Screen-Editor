@@ -53,7 +53,7 @@ export const ctaSectionSchema = z.object({
   id: z.string().min(1),
   type: z.literal("cta"),
   label: z.string(),
-  href: z.string().url("Must be a full URL, like https://www.reactiv.ai"),
+  href: z.string().url("Must be a full URL, like https://www.example.com"),
   backgroundColor: hexColorSchema,
   labelColor: hexColorSchema,
   fullWidth: z.boolean().default(true),

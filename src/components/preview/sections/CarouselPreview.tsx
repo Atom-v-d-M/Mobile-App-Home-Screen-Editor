@@ -174,7 +174,7 @@ export function CarouselPreview({ section }: { section: CarouselSection }) {
   }
 
   return (
-    <div className="reactiv-carousel py-3">
+    <div className="home-carousel py-3">
       <Swiper
         // Reinitialise when the slide set or the ratio changes.
         key={`${section.items.length}-${section.aspect}-${section.loop}`}

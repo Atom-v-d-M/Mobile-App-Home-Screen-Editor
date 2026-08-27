@@ -86,7 +86,7 @@ export function parseConfig(raw: string): ParseResult {
 
 export function exportFilename(now: Date = new Date()): string {
   const iso = now.toISOString().slice(0, 10);
-  return `reactiv-home-screen-${iso}.json`;
+  return `home-screen-${iso}.json`;
 }
 
 /** Ignores ids and timestamps: has the user actually changed anything? */

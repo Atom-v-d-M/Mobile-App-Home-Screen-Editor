@@ -30,7 +30,7 @@ export function UrlField({ label, value, onChange, error, hint, placeholder }: U
   useEffect(() => setTouched(false), [value]);
 
   const valid = isValidUrl(value);
-  const shownError = error ?? (touched && !valid ? "Use a full URL, like https://www.reactiv.ai" : undefined);
+  const shownError = error ?? (touched && !valid ? "Use a full URL, like https://www.example.com" : undefined);
 
   return (
     <FieldShell id={id} label={label} error={shownError} hint={hint}>

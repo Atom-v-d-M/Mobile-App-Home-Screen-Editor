@@ -15,15 +15,15 @@
       "id": "sample-carousel",
       "type": "carousel",
       "items": [
-        { "id": "sample-image-1", "kind": "image", "url": "https://picsum.photos/seed/reactiv-a/900/1200", "alt": "Model in the wool overcoat" },
+        { "id": "sample-image-1", "kind": "image", "url": "https://picsum.photos/seed/home-a/900/1200", "alt": "Model in the wool overcoat" },
         {
           "id": "sample-video-1",
           "kind": "video",
           "url": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
           "alt": "Fabric moving in studio light",
-          "poster": "https://picsum.photos/seed/reactiv-video/900/1200"
+          "poster": "https://picsum.photos/seed/home-video/900/1200"
         },
-        { "id": "sample-image-3", "kind": "image", "url": "https://picsum.photos/seed/reactiv-c/900/1200", "alt": "Coat hanging in studio light" }
+        { "id": "sample-image-3", "kind": "image", "url": "https://picsum.photos/seed/home-c/900/1200", "alt": "Coat hanging in studio light" }
       ],
       "aspect": "portrait",
       "showPagination": true,
@@ -42,7 +42,7 @@
       "id": "sample-cta",
       "type": "cta",
       "label": "Shop the drop",
-      "href": "https://www.reactiv.ai",
+      "href": "https://www.example.com",
       "backgroundColor": "#FF6B2C",
       "labelColor": "#FFFFFF",
       "fullWidth": true,

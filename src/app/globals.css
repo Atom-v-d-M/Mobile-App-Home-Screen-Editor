@@ -28,20 +28,20 @@
 }
 
 /* Swiper pagination reads against the light app screen, not Swiper's blue. */
-.reactiv-carousel .swiper {
+.home-carousel .swiper {
   padding-bottom: 32px;
 }
 
-.reactiv-carousel .swiper-pagination {
+.home-carousel .swiper-pagination {
   bottom: 4px;
 }
 
-.reactiv-carousel .swiper-pagination-bullet {
+.home-carousel .swiper-pagination-bullet {
   background: #000;
   opacity: 0.2;
 }
 
-.reactiv-carousel .swiper-pagination-bullet-active {
+.home-carousel .swiper-pagination-bullet-active {
   opacity: 0.6;
 }
 

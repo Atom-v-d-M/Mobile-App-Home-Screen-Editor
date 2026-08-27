@@ -11,7 +11,7 @@ describe("io", () => {
   });
 
   it("names the export file by date", () => {
-    expect(exportFilename(new Date("2026-08-20T10:00:00.000Z"))).toBe("reactiv-home-screen-2026-08-20.json");
+    expect(exportFilename(new Date("2026-08-20T10:00:00.000Z"))).toBe("home-screen-2026-08-20.json");
   });
 
   it("rejects invalid JSON", () => {

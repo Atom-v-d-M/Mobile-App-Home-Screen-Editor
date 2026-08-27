@@ -19,9 +19,9 @@ export const SECTION_LABELS = {
   cta: "CTA button",
 } as const;
 
-export const STORAGE_KEY_CONFIG = "reactiv-home-editor:v1";
-export const STORAGE_KEY_PANEL = "reactiv-home-editor:panel:v1";
-export const STORAGE_KEY_DEVICE = "reactiv-home-editor:device:v1";
+export const STORAGE_KEY_CONFIG = "home-screen-editor:v1";
+export const STORAGE_KEY_PANEL = "home-screen-editor:panel:v1";
+export const STORAGE_KEY_DEVICE = "home-screen-editor:device:v1";
 export const AUTOSAVE_DELAY_MS = 300;
 
 export const MD_BREAKPOINT = "(min-width: 768px)";
