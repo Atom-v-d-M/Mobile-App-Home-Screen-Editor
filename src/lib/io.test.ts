@@ -66,14 +66,14 @@ describe("io", () => {
     expect(isSameShape(a, { ...a, meta: { name: "Other" } })).toBe(true);
   });
 
-  it("regenerates nested image ids too", () => {
+  it("regenerates nested item ids too", () => {
     const original = createDefaultConfig();
     const next = regenerateIds(original);
     const before = original.sections[0];
     const after = next.sections[0];
     if (before.type === "carousel" && after.type === "carousel") {
-      expect(after.images.map((i) => i.id)).not.toEqual(before.images.map((i) => i.id));
-      expect(after.images.map((i) => i.url)).toEqual(before.images.map((i) => i.url));
+      expect(after.items.map((i) => i.id)).not.toEqual(before.items.map((i) => i.id));
+      expect(after.items.map((i) => i.url)).toEqual(before.items.map((i) => i.url));
     }
   });
 });

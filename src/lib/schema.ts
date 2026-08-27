@@ -6,20 +6,32 @@ export const hexColorSchema = z
   .string()
   .regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, "Use 3 or 6 hex digits, like #FF6B2C");
 
-export const imageUrlSchema = z
-  .string()
-  .regex(/^(https?:\/\/|data:image\/)/, "Must be an http(s) or data:image URL");
+export const mediaUrlSchema = z.string().regex(/^https?:\/\//, "Must be an http(s) URL");
 
-export const carouselImageSchema = z.object({
+export const carouselImageItemSchema = z.object({
   id: z.string().min(1),
-  url: imageUrlSchema,
+  kind: z.literal("image"),
+  url: mediaUrlSchema,
   alt: z.string().default(""),
 });
+
+export const carouselVideoItemSchema = z.object({
+  id: z.string().min(1),
+  kind: z.literal("video"),
+  url: mediaUrlSchema,
+  alt: z.string().default(""),
+  poster: mediaUrlSchema.optional(),
+});
+
+export const carouselItemSchema = z.discriminatedUnion("kind", [
+  carouselImageItemSchema,
+  carouselVideoItemSchema,
+]);
 
 export const carouselSectionSchema = z.object({
   id: z.string().min(1),
   type: z.literal("carousel"),
-  images: z.array(carouselImageSchema).default([]),
+  items: z.array(carouselItemSchema).default([]),
   aspect: z.enum(["portrait", "landscape", "square"]).default("square"),
   showPagination: z.boolean().default(true),
   loop: z.boolean().default(false),
@@ -74,7 +86,9 @@ export const screenConfigSchema = z.object({
 });
 
 export type Align = z.infer<typeof alignSchema>;
-export type CarouselImage = z.infer<typeof carouselImageSchema>;
+export type CarouselItem = z.infer<typeof carouselItemSchema>;
+export type CarouselImageItem = z.infer<typeof carouselImageItemSchema>;
+export type CarouselVideoItem = z.infer<typeof carouselVideoItemSchema>;
 export type CarouselSection = z.infer<typeof carouselSectionSchema>;
 export type TextSection = z.infer<typeof textSectionSchema>;
 export type CtaSection = z.infer<typeof ctaSectionSchema>;

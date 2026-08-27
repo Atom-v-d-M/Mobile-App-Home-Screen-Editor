@@ -72,7 +72,7 @@ describe("configReducer", () => {
     expect(next.sections[3]).toBe(state.sections[2]);
   });
 
-  it("duplicates a carousel with new image ids and the same content", () => {
+  it("duplicates a carousel with new item ids and the same content", () => {
     const state = base();
     const source = state.sections[0] as CarouselSection;
     const next = configReducer(state, { type: "section/duplicate", payload: { id: source.id } });
@@ -80,10 +80,10 @@ describe("configReducer", () => {
 
     expect(clone).toMatchObject({ type: "carousel", aspect: source.aspect, loop: source.loop });
     expect(clone.id).not.toBe(source.id);
-    expect(clone.images.map((image) => image.url)).toEqual(source.images.map((image) => image.url));
-    expect(clone.images.map((image) => image.id)).not.toEqual(source.images.map((image) => image.id));
+    expect(clone.items.map((item) => item.url)).toEqual(source.items.map((item) => item.url));
+    expect(clone.items.map((item) => item.id)).not.toEqual(source.items.map((item) => item.id));
 
-    const ids = [source.id, clone.id, ...source.images.map((image) => image.id), ...clone.images.map((image) => image.id)];
+    const ids = [source.id, clone.id, ...source.items.map((item) => item.id), ...clone.items.map((item) => item.id)];
     expect(new Set(ids).size).toBe(ids.length);
   });
 
@@ -127,38 +127,72 @@ describe("configReducer", () => {
     expect(configReducer(state, { type: "section/update", payload: { id, patch: { type: "cta" } } })).toBe(state);
   });
 
-  it("adds, updates, removes and reorders carousel images", () => {
+  it("adds, updates, removes and reorders carousel items", () => {
     const state = base();
     const sectionId = state.sections[0].id;
 
     const added = configReducer(state, {
-      type: "image/add",
+      type: "item/add",
       payload: { sectionId, url: "https://picsum.photos/seed/reactiv-4/800/800" },
     });
-    expect(carouselOf(added).images).toHaveLength(4);
+    expect(carouselOf(added).items).toHaveLength(4);
+    expect(carouselOf(added).items[3]).toMatchObject({ kind: "image", url: "https://picsum.photos/seed/reactiv-4/800/800" });
 
-    const imageId = carouselOf(state).images[0].id;
+    const itemId = carouselOf(state).items[0].id;
     const updated = configReducer(state, {
-      type: "image/update",
-      payload: { sectionId, imageId, patch: { alt: "Front" } },
+      type: "item/update",
+      payload: { sectionId, itemId, patch: { alt: "Front" } },
     });
-    expect(carouselOf(updated).images[0].alt).toBe("Front");
-    expect(carouselOf(state).images[0].alt).toBe("");
+    expect(carouselOf(updated).items[0].alt).toBe("Front");
+    expect(carouselOf(state).items[0].alt).toBe("");
 
-    const removed = configReducer(state, { type: "image/remove", payload: { sectionId, imageId } });
-    expect(carouselOf(removed).images).toHaveLength(2);
+    const removed = configReducer(state, { type: "item/remove", payload: { sectionId, itemId } });
+    expect(carouselOf(removed).items).toHaveLength(2);
 
-    const reordered = configReducer(state, { type: "image/reorder", payload: { sectionId, from: 0, to: 2 } });
-    expect(carouselOf(reordered).images[2].id).toBe(imageId);
+    const reordered = configReducer(state, { type: "item/reorder", payload: { sectionId, from: 0, to: 2 } });
+    expect(carouselOf(reordered).items[2].id).toBe(itemId);
   });
 
-  it("ignores image actions aimed at a missing or non-carousel section", () => {
+  it("infers video from a file URL and rebuilds kind without mixing shapes", () => {
+    const state = base();
+    const sectionId = state.sections[0].id;
+
+    const added = configReducer(state, {
+      type: "item/add",
+      payload: { sectionId, url: "https://cdn.example/look.mp4" },
+    });
+    const video = carouselOf(added).items.at(-1);
+    expect(video).toMatchObject({ kind: "video", url: "https://cdn.example/look.mp4", alt: "" });
+    expect(video && "poster" in video).toBe(false);
+
+    const withPoster = configReducer(added, {
+      type: "item/update",
+      payload: { sectionId, itemId: video!.id, patch: { poster: "https://cdn.example/still.jpg" } },
+    });
+    expect(carouselOf(withPoster).items.at(-1)).toMatchObject({
+      kind: "video",
+      poster: "https://cdn.example/still.jpg",
+    });
+
+    const asImage = configReducer(withPoster, {
+      type: "item/update",
+      payload: { sectionId, itemId: video!.id, patch: { kind: "image" } },
+    });
+    expect(carouselOf(asImage).items.at(-1)).toEqual({
+      id: video!.id,
+      kind: "image",
+      url: "https://cdn.example/look.mp4",
+      alt: "",
+    });
+  });
+
+  it("ignores item actions aimed at a missing or non-carousel section", () => {
     const state = base();
     const textId = state.sections[1].id;
-    expect(configReducer(state, { type: "image/add", payload: { sectionId: textId, url: "https://x.dev/a.png" } })).toBe(state);
-    expect(configReducer(state, { type: "image/remove", payload: { sectionId: "ghost", imageId: "x" } })).toBe(state);
+    expect(configReducer(state, { type: "item/add", payload: { sectionId: textId, url: "https://x.dev/a.png" } })).toBe(state);
+    expect(configReducer(state, { type: "item/remove", payload: { sectionId: "ghost", itemId: "x" } })).toBe(state);
     expect(
-      configReducer(state, { type: "image/reorder", payload: { sectionId: state.sections[0].id, from: 0, to: 7 } }),
+      configReducer(state, { type: "item/reorder", payload: { sectionId: state.sections[0].id, from: 0, to: 7 } }),
     ).toBe(state);
   });
 
@@ -192,17 +226,17 @@ describe("configReducer", () => {
     const second = state.sections[3] as CarouselSection;
 
     state = configReducer(state, {
-      type: "image/add",
+      type: "item/add",
       payload: { sectionId: second.id, url: "https://picsum.photos/seed/second/800/800" },
     });
-    expect((state.sections[0] as CarouselSection).images).toHaveLength(first.images.length);
-    expect((state.sections[3] as CarouselSection).images).toHaveLength(second.images.length + 1);
+    expect((state.sections[0] as CarouselSection).items).toHaveLength(first.items.length);
+    expect((state.sections[3] as CarouselSection).items).toHaveLength(second.items.length + 1);
 
     state = configReducer(state, {
-      type: "image/remove",
-      payload: { sectionId: first.id, imageId: first.images[0].id },
+      type: "item/remove",
+      payload: { sectionId: first.id, itemId: first.items[0].id },
     });
-    expect((state.sections[0] as CarouselSection).images).toHaveLength(first.images.length - 1);
-    expect((state.sections[3] as CarouselSection).images).toHaveLength(second.images.length + 1);
+    expect((state.sections[0] as CarouselSection).items).toHaveLength(first.items.length - 1);
+    expect((state.sections[3] as CarouselSection).items).toHaveLength(second.items.length + 1);
   });
 });

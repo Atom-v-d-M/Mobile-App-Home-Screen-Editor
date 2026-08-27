@@ -2,13 +2,15 @@ import { DEFAULT_COLOR_PALETTE } from "./color";
 import { createId } from "./id";
 import type { ScreenConfig, Section, SectionType } from "./schema";
 
-/** Deep copy a section with fresh ids (section and nested carousel images). */
+const SAMPLE_VIDEO_URL = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+
+/** Deep copy a section with fresh ids (section and nested carousel items). */
 export function cloneSection(section: Section): Section {
   if (section.type === "carousel") {
     return {
       ...section,
       id: createId(),
-      images: section.images.map((image) => ({ ...image, id: createId() })),
+      items: section.items.map((item) => ({ ...item, id: createId() })),
     };
   }
   return { ...section, id: createId() };
@@ -21,9 +23,7 @@ export function createSection(type: SectionType): Section {
       return {
         id: createId(),
         type: "carousel",
-        images: [
-          { id: createId(), url: "https://picsum.photos/seed/reactiv-1/800/800", alt: "" },
-        ],
+        items: [{ id: createId(), kind: "image", url: "https://picsum.photos/seed/reactiv-1/800/800", alt: "" }],
         aspect: "square",
         showPagination: true,
         loop: false,
@@ -63,10 +63,16 @@ export function createDefaultConfig(): ScreenConfig {
       {
         id: createId(),
         type: "carousel",
-        images: [
-          { id: createId(), url: "https://picsum.photos/seed/reactiv-1/800/800", alt: "" },
-          { id: createId(), url: "https://picsum.photos/seed/reactiv-2/800/800", alt: "" },
-          { id: createId(), url: "https://picsum.photos/seed/reactiv-3/800/800", alt: "" },
+        items: [
+          { id: createId(), kind: "image", url: "https://picsum.photos/seed/reactiv-1/800/800", alt: "" },
+          {
+            id: createId(),
+            kind: "video",
+            url: SAMPLE_VIDEO_URL,
+            alt: "",
+            poster: "https://picsum.photos/seed/reactiv-video/800/800",
+          },
+          { id: createId(), kind: "image", url: "https://picsum.photos/seed/reactiv-3/800/800", alt: "" },
         ],
         aspect: "square",
         showPagination: true,

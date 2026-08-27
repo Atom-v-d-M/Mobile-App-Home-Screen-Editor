@@ -14,7 +14,8 @@ import {
 import { AUTOSAVE_DELAY_MS, STORAGE_KEY_CONFIG } from "@/lib/constants";
 import { createDefaultConfig } from "@/lib/defaults";
 import { readStoredConfig, writeStoredConfig } from "@/lib/storage";
-import type { CarouselImage, ScreenConfig, Section, SectionType } from "@/lib/schema";
+import type { CarouselItemPatch } from "@/lib/media";
+import type { ScreenConfig, Section, SectionType } from "@/lib/schema";
 import { configReducer, type ConfigAction } from "./configReducer";
 
 interface ConfigContextValue {
@@ -89,22 +90,23 @@ export function useConfigActions() {
     [dispatch],
   );
 
-  const addImage = useCallback(
-    (sectionId: string, url: string) => dispatch({ type: "image/add", payload: { sectionId, url } }),
+  const addItem = useCallback(
+    (sectionId: string, url: string, kind?: "image" | "video") =>
+      dispatch({ type: "item/add", payload: { sectionId, url, kind } }),
     [dispatch],
   );
-  const updateImage = useCallback(
-    (sectionId: string, imageId: string, patch: Partial<CarouselImage>) =>
-      dispatch({ type: "image/update", payload: { sectionId, imageId, patch } }),
+  const updateItem = useCallback(
+    (sectionId: string, itemId: string, patch: CarouselItemPatch) =>
+      dispatch({ type: "item/update", payload: { sectionId, itemId, patch } }),
     [dispatch],
   );
-  const removeImage = useCallback(
-    (sectionId: string, imageId: string) => dispatch({ type: "image/remove", payload: { sectionId, imageId } }),
+  const removeItem = useCallback(
+    (sectionId: string, itemId: string) => dispatch({ type: "item/remove", payload: { sectionId, itemId } }),
     [dispatch],
   );
-  const reorderImages = useCallback(
+  const reorderItems = useCallback(
     (sectionId: string, from: number, to: number) =>
-      dispatch({ type: "image/reorder", payload: { sectionId, from, to } }),
+      dispatch({ type: "item/reorder", payload: { sectionId, from, to } }),
     [dispatch],
   );
 
@@ -119,10 +121,10 @@ export function useConfigActions() {
       removeSection,
       reorderSections,
       updateSection,
-      addImage,
-      updateImage,
-      removeImage,
-      reorderImages,
+      addItem,
+      updateItem,
+      removeItem,
+      reorderItems,
     }),
     [
       loadConfig,
@@ -134,10 +136,10 @@ export function useConfigActions() {
       removeSection,
       reorderSections,
       updateSection,
-      addImage,
-      updateImage,
-      removeImage,
-      reorderImages,
+      addItem,
+      updateItem,
+      removeItem,
+      reorderItems,
     ],
   );
 }

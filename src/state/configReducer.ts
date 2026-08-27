@@ -1,7 +1,8 @@
 import { arrayMove } from "@/lib/array";
 import { cloneSection, createDefaultConfig, createSection } from "@/lib/defaults";
 import { createId } from "@/lib/id";
-import type { CarouselImage, CarouselSection, ScreenConfig, Section, SectionType } from "@/lib/schema";
+import { applyCarouselItemPatch, createCarouselItem, type CarouselItemPatch } from "@/lib/media";
+import type { CarouselSection, ScreenConfig, Section, SectionType } from "@/lib/schema";
 
 /**
  * Pure config reducer. No React, no side effects, no Date.now() outside of
@@ -17,10 +18,10 @@ export type ConfigAction =
   | { type: "section/remove"; payload: { id: string } }
   | { type: "section/reorder"; payload: { from: number; to: number } }
   | { type: "section/update"; payload: { id: string; patch: Partial<Section> } }
-  | { type: "image/add"; payload: { sectionId: string; url: string } }
-  | { type: "image/update"; payload: { sectionId: string; imageId: string; patch: Partial<CarouselImage> } }
-  | { type: "image/remove"; payload: { sectionId: string; imageId: string } }
-  | { type: "image/reorder"; payload: { sectionId: string; from: number; to: number } };
+  | { type: "item/add"; payload: { sectionId: string; url: string; kind?: "image" | "video" } }
+  | { type: "item/update"; payload: { sectionId: string; itemId: string; patch: CarouselItemPatch } }
+  | { type: "item/remove"; payload: { sectionId: string; itemId: string } }
+  | { type: "item/reorder"; payload: { sectionId: string; from: number; to: number } };
 
 /** Apply a patch to one section, keeping the discriminant untouched. */
 function patchSection(section: Section, patch: Partial<Section>): Section {
@@ -111,46 +112,44 @@ export function configReducer(state: ScreenConfig, action: ConfigAction): Screen
       return { ...state, sections };
     }
 
-    case "image/add": {
-      const image: CarouselImage = { id: createId(), url: action.payload.url, alt: "" };
+    case "item/add": {
+      const item = createCarouselItem(createId(), action.payload.url, action.payload.kind);
       const sections = mapCarousel(state.sections, action.payload.sectionId, (section) => ({
         ...section,
-        images: [...section.images, image],
+        items: [...section.items, item],
       }));
       if (sections === state.sections) return state;
       return { ...state, sections };
     }
 
-    case "image/update": {
+    case "item/update": {
       const sections = mapCarousel(state.sections, action.payload.sectionId, (section) => {
-        const index = section.images.findIndex((image) => image.id === action.payload.imageId);
+        const index = section.items.findIndex((item) => item.id === action.payload.itemId);
         if (index === -1) return section;
 
-        const images = section.images.slice();
-        const { id: _id, ...rest } = action.payload.patch;
-        void _id;
-        images[index] = { ...images[index], ...rest };
-        return { ...section, images };
+        const items = section.items.slice();
+        items[index] = applyCarouselItemPatch(items[index], action.payload.patch);
+        return { ...section, items };
       });
       if (sections === state.sections) return state;
       return { ...state, sections };
     }
 
-    case "image/remove": {
+    case "item/remove": {
       const sections = mapCarousel(state.sections, action.payload.sectionId, (section) => {
-        const images = section.images.filter((image) => image.id !== action.payload.imageId);
-        if (images.length === section.images.length) return section;
-        return { ...section, images };
+        const items = section.items.filter((item) => item.id !== action.payload.itemId);
+        if (items.length === section.items.length) return section;
+        return { ...section, items };
       });
       if (sections === state.sections) return state;
       return { ...state, sections };
     }
 
-    case "image/reorder": {
+    case "item/reorder": {
       const sections = mapCarousel(state.sections, action.payload.sectionId, (section) => {
-        const images = arrayMove(section.images, action.payload.from, action.payload.to);
-        if (images === section.images) return section;
-        return { ...section, images };
+        const items = arrayMove(section.items, action.payload.from, action.payload.to);
+        if (items === section.items) return section;
+        return { ...section, items };
       });
       if (sections === state.sections) return state;
       return { ...state, sections };

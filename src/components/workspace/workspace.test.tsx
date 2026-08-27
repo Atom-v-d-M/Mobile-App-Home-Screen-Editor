@@ -10,8 +10,8 @@ import { UiProvider } from "@/state/UiContext";
 // Swiper measures real layout; the preview carousel is stubbed so these tests
 // assert on config → DOM, not on Swiper's internals.
 vi.mock("@/components/preview/sections/CarouselPreviewClient", () => ({
-  CarouselPreviewClient: ({ section }: { section: { images: unknown[] } }) => (
-    <div data-testid="carousel-preview">{section.images.length} images</div>
+  CarouselPreviewClient: ({ section }: { section: { items: unknown[] } }) => (
+    <div data-testid="carousel-preview">{section.items.length} items</div>
   ),
 }));
 
@@ -46,10 +46,16 @@ function stubListRects() {
 
   vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
     const element = this as HTMLElement;
-    const parent = element.parentElement;
-    if (element.tagName === "LI" && parent) {
-      const index = Array.from(parent.children).indexOf(element);
+    const li = element.closest("li");
+    const parent = li?.parentElement;
+    if (li && parent) {
+      const index = Array.from(parent.children).indexOf(li);
       return rect(index * 80, 80);
+    }
+    // The drag overlay is a portalled copy of the card, not an LI. A 640px
+    // overlay makes closestCorners skip straight to the last section.
+    if (typeof element.className === "string" && element.className.includes("rotate-[3deg]")) {
+      return rect(0, 80);
     }
     return rect(0, 640);
   });
@@ -105,6 +111,24 @@ describe("editor → preview", () => {
 
     expect(screen.getAllByTestId("carousel-preview")).toHaveLength(2);
     expect(previewSections().at(-1)).toHaveAttribute("data-section-type", "carousel");
+  });
+
+  it("switches a carousel item to video and infers kind from a pasted file URL", async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+
+    await user.click(screen.getByRole("button", { name: /^media carousel/i }));
+    expect(screen.getByPlaceholderText("Poster URL (optional)")).toBeInTheDocument();
+
+    const types = screen.getAllByRole("radiogroup", { name: "Type" });
+    await user.click(within(types[1]).getByRole("radio", { name: "Image" }));
+    expect(screen.queryByPlaceholderText("Poster URL (optional)")).not.toBeInTheDocument();
+
+    await user.type(screen.getByPlaceholderText("Paste an image or video URL"), "https://cdn.example/look.mp4");
+    await user.click(screen.getByRole("button", { name: "Add media" }));
+
+    expect(screen.getByPlaceholderText("Poster URL (optional)")).toBeInTheDocument();
+    expect(screen.getByTestId("carousel-preview")).toHaveTextContent("4 items");
   });
 
   it("places theme settings above screen settings", () => {
@@ -166,7 +190,7 @@ describe("editor → preview", () => {
 
     expect(previewSections().map((node) => node.dataset.sectionType)).toEqual(["carousel", "text", "cta"]);
 
-    const handle = screen.getByRole("button", { name: /reorder image carousel/i });
+    const handle = screen.getByRole("button", { name: /reorder media carousel/i });
     handle.focus();
     await user.keyboard("[Space]");
     await user.keyboard("[ArrowDown]");

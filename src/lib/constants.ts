@@ -14,7 +14,7 @@ export const ASPECT_LABELS: Record<CarouselSection["aspect"], string> = {
 };
 
 export const SECTION_LABELS = {
-  carousel: "Image carousel",
+  carousel: "Media carousel",
   text: "Text block",
   cta: "CTA button",
 } as const;

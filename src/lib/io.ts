@@ -25,7 +25,7 @@ export function regenerateIds(config: ScreenConfig): ScreenConfig {
         return {
           ...section,
           id: createId(),
-          images: section.images.map((image) => ({ ...image, id: createId() })),
+          items: section.items.map((item) => ({ ...item, id: createId() })),
         };
       }
       return { ...section, id: createId() };
@@ -97,7 +97,7 @@ export function isSameShape(a: ScreenConfig, b: ScreenConfig): boolean {
       screen: config.screen,
       sections: config.sections.map((section) =>
         section.type === "carousel"
-          ? { ...section, id: "", images: section.images.map((image) => ({ ...image, id: "" })) }
+          ? { ...section, id: "", items: section.items.map((item) => ({ ...item, id: "" })) }
           : { ...section, id: "" },
       ),
     });
